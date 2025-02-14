@@ -5,6 +5,7 @@ import tensorflow_datasets as tfds
 import os
 from PIL import Image
 import numpy as np
+from scipy.io import loadmat
 
 class flower:
     def __init__(self, datapath):
@@ -24,8 +25,17 @@ class flower:
         print(images.shape)
         print(labels)
 
+import torch
+import torch.nn as nn
+import torch.optim as optim
+class FlowerClassifier(nn.Module):
+    def __init__(self):
+        None
 
 if __name__ == "__main__":
     #datapath = input("Where is your flower data set stored ")
+    #labels_path = input("Path to the imagelabels.mat ")
+    labels_path = "C:/Users/vbacho/OneDrive - UW/ml flower/imagelabels.mat"
+    labels_data = loadmat(labels_path)
     datapath = "C:/Users/vbacho/OneDrive - UW/ml flower/jpg"
     flower(datapath)
