@@ -1,15 +1,20 @@
+import shutil
 import torchvision.transforms as transforms
 from torchvision.datasets import ImageFolder
 from torch.utils.data import DataLoader
-import tensorflow_datasets as tfds
 import os
-from PIL import Image
-import numpy as np
 from scipy.io import loadmat
 
-class flower:
-    def __init__(self, datapath):
-        self.data = self.convert_dataset(datapath)
+class Flower:
+    def __init__(self, datapath, labels_path):
+        self.labels_path = labels_path
+        self.datapath = os.path.join(datapath, "organized")
+        if not self.is_already_organized():
+            self.create_sub_directories(datapath)
+        else:
+            print("Dataset is already organized.")
+        self.data = self.convert_dataset(self.datapath)
+
 
     def convert_dataset(self, datapath):
         transform = transforms.Compose([
@@ -19,23 +24,44 @@ class flower:
         ])
         dataset = ImageFolder(datapath, transform)
         dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
-        data_iter = iter(dataloader)
-        images, labels = next(data_iter)
+        return dataloader
 
-        print(images.shape)
-        print(labels)
+    def create_sub_directories(self, original_datapath):
+        labels_data = loadmat(self.labels_path)
+        labels = labels_data["labels"][0] - 1
 
-import torch
-import torch.nn as nn
-import torch.optim as optim
-class FlowerClassifier(nn.Module):
-    def __init__(self):
-        None
+        if not os.path.exists(self.datapath):
+            os.makedirs(self.datapath)
+
+        num_classes = len(set(labels))
+        for i in range(num_classes):
+            class_folder = os.path.join(self.datapath, f"class_{i}")
+            if not os.path.exists(class_folder):
+                os.makedirs(class_folder)
+
+        for idx, label in enumerate(labels):
+            image_filename = f"image_{idx+1:05d}.jpg"
+            source_path = os.path.join(original_datapath, image_filename)
+            destination_folder = os.path.join(self.datapath, f"class_{label}")
+            destination_path = os.path.join(destination_folder, image_filename)
+
+            if os.path.exists(source_path):
+                shutil.move(source_path, destination_path)
+            else:
+                print(f" Warning: {source_path} not found.")
+
+    def is_already_organized(self):
+
+
+
+# import torch
+# import torch.nn as nn
+# import torch.optim as optim
+# class FlowerClassifier(nn.Module):
+#     def __init__(self):
+#         super(FlowerClassifier, self).__init__()
 
 if __name__ == "__main__":
-    #datapath = input("Where is your flower data set stored ")
-    #labels_path = input("Path to the imagelabels.mat ")
     labels_path = "C:/Users/vbacho/OneDrive - UW/ml flower/imagelabels.mat"
-    labels_data = loadmat(labels_path)
     datapath = "C:/Users/vbacho/OneDrive - UW/ml flower/jpg"
-    flower(datapath)
+    flower = Flower(datapath, labels_path)
