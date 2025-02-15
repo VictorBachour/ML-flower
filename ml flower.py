@@ -65,12 +65,12 @@ class Flower:
 
 
 
-# import torch
-# import torch.nn as nn
-# import torch.optim as optim
-# class FlowerClassifier(nn.Module):
-#     def __init__(self):
-#         super(FlowerClassifier, self).__init__()
+import torch
+import torch.nn as nn
+import torch.optim as optim
+class FlowerClassifier(nn.Module):
+    def __init__(self):
+        super(FlowerClassifier, self).__init__()
 
 if __name__ == "__main__":
     labels_path = "C:/Users/vbacho/OneDrive - UW/ml flower/imagelabels.mat"
