@@ -51,6 +51,17 @@ class Flower:
                 print(f" Warning: {source_path} not found.")
 
     def is_already_organized(self):
+        if not os.path.exists(self.datapath):
+            return False
+
+        for folder in os.listdir(self.datapath):
+            folder_path = os.path.join(self.datapath, folder)
+            if os.path.isdir(folder_path):
+                if any(fname.endswith(('.jpg', '.jpeg', '.png')) for fname in os.listdir(folder_path)):
+                    continue
+                else:
+                    return False
+        return True
 
 
 
