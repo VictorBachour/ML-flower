@@ -68,9 +68,17 @@ class Flower:
 import torch
 import torch.nn as nn
 import torch.optim as optim
-class FlowerClassifier(nn.Module):
+class CustomCNN(nn.Module):
     def __init__(self):
-        super(FlowerClassifier, self).__init__()
+        super(CustomCNN, self).__init__()
+        self.model = self.train_model()
+
+    def train_model(self):
+        self.conv_layers = nn.Sequential(
+            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+        )
 
 if __name__ == "__main__":
     labels_path = "C:/Users/vbacho/OneDrive - UW/ml flower/imagelabels.mat"
