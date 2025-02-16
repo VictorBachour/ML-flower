@@ -132,7 +132,7 @@ if __name__ == "__main__":
         for epoch in range(epochs):
             model.train()
             running_loss = 0.0
-
+#
             for inputs, labels in train_loader:
                 inputs, labels = inputs.to(device), labels.to(device)
                 optimizer.zero_grad()
