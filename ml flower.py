@@ -7,7 +7,8 @@ from scipy.io import loadmat
 import torch
 import torch.nn as nn
 import torch.optim as optim
-
+from PIL import Image
+from torchvision import models
 
 class Flower:
     def __init__(self, datapath, labels_path):
@@ -80,22 +81,30 @@ class CustomCNN(nn.Module):
         super(CustomCNN, self).__init__()
         self.conv_layers = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
             nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(128),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2)
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2)
         )
 
         self.fc_layers = nn.Sequential(
-            nn.Linear(128 * 28 * 28, 512),
+            nn.Linear(256 * 14 * 14, 512),
             nn.ReLU(),
-            nn.Dropout(0.3),
+            nn.Dropout(0.4),
             nn.Linear(512, num_classes)
         )
 
@@ -105,6 +114,26 @@ class CustomCNN(nn.Module):
         x = self.fc_layers(x)
         return x
 
+def predict_image(image_path, model):
+    transform = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.RandomRotation(20),
+        transforms.RandomHorizontalFlip(),
+        transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),
+        transforms.ColorJitter(brightness=0.2, contrast=0.2),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+
+    image = Image.open(image_path)
+    image = transform(image).unsqueeze(0)  # Add batch dimension
+    image = image.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+
+    with torch.no_grad():
+        output = model(image)
+        _, predicted = torch.max(output, 1)
+
+    return predicted.item()
 
 if __name__ == "__main__":
     labels_path = "C:/Users/vbacho/OneDrive - UW/ml flower/imagelabels.mat"
@@ -117,7 +146,7 @@ if __name__ == "__main__":
     model = CustomCNN(num_classes)
     model_path = "flower_model.pth"
 
-    if os.path.exists(model_path):
+    if False:#os.path.exists(model_path):
         model.load_state_dict(torch.load(model_path))
         model.eval()
         print("Model loaded from saved file.")
@@ -126,13 +155,14 @@ if __name__ == "__main__":
         model.to(device)
 
         criterion = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr=0.001)
+        optimizer = optim.AdamW(model.parameters(), lr=0.0001, weight_decay=1e-4)
+        scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.5)
 
         epochs = 10
         for epoch in range(epochs):
             model.train()
             running_loss = 0.0
-#
+
             for inputs, labels in train_loader:
                 inputs, labels = inputs.to(device), labels.to(device)
                 optimizer.zero_grad()
@@ -161,3 +191,6 @@ if __name__ == "__main__":
 
         torch.save(model.state_dict(), model_path)
         print("Model trained and saved.")
+    # image_path = "C:/Users/vbacho/OneDrive - UW/ml flower/jpg/organized/class_7/image_03286.jpg"
+    # predicted_class = predict_image(image_path, model)
+    # print(f"Predicted class: {predicted_class}")
