@@ -158,7 +158,7 @@ if __name__ == "__main__":
         optimizer = optim.AdamW(model.parameters(), lr=0.0001, weight_decay=1e-4)
         scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.5)
 
-        epochs = 10
+        epochs = 30
         for epoch in range(epochs):
             model.train()
             running_loss = 0.0
