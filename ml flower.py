@@ -194,3 +194,67 @@ if __name__ == "__main__":
     # image_path = "C:/Users/vbacho/OneDrive - UW/ml flower/jpg/organized/class_7/image_03286.jpg"
     # predicted_class = predict_image(image_path, model)
     # print(f"Predicted class: {predicted_class}")
+# Dataset is already organized.
+# Epoch 1/30, Loss: 4.147857492726024
+# Accuracy rate: 19.54%
+# Epoch 2/30, Loss: 3.426781446177785
+# Accuracy rate: 28.82%
+# Epoch 3/30, Loss: 2.937955616741646
+# Accuracy rate: 36.20%
+# Epoch 4/30, Loss: 2.557198732655223
+# Accuracy rate: 41.15%
+# Epoch 5/30, Loss: 2.2828362796364763
+# Accuracy rate: 44.38%
+# Epoch 6/30, Loss: 2.020633293942707
+# Accuracy rate: 47.31%
+# Epoch 7/30, Loss: 1.7855786591041378
+# Accuracy rate: 49.33%
+# Epoch 8/30, Loss: 1.6208327712082282
+# Accuracy rate: 51.77%
+# Epoch 9/30, Loss: 1.4384829012359062
+# Accuracy rate: 54.58%
+# Epoch 10/30, Loss: 1.2610429757978858
+# Accuracy rate: 53.48%
+# Epoch 11/30, Loss: 1.1178159079900603
+# Accuracy rate: 56.04%
+# Epoch 12/30, Loss: 1.0176351765306983
+# Accuracy rate: 56.78%
+# Epoch 13/30, Loss: 0.9209188669193081
+# Accuracy rate: 54.64%
+# Epoch 14/30, Loss: 0.8216246253106653
+# Accuracy rate: 55.68%
+# Epoch 15/30, Loss: 0.7295350612663641
+# Accuracy rate: 58.79%
+# Epoch 16/30, Loss: 0.6582389056682587
+# Accuracy rate: 59.10%
+# Epoch 17/30, Loss: 0.5940092789690669
+# Accuracy rate: 58.79%
+# Epoch 18/30, Loss: 0.5336900437750467
+# Accuracy rate: 56.78%
+# Epoch 19/30, Loss: 0.5041012452142994
+# Accuracy rate: 56.23%
+# Epoch 20/30, Loss: 0.43941344022750856
+# Accuracy rate: 59.10%
+# Epoch 21/30, Loss: 0.4400984351227923
+# Accuracy rate: 56.59%
+# Epoch 22/30, Loss: 0.3733898963870072
+# Accuracy rate: 58.24%
+# Epoch 23/30, Loss: 0.35450238585472105
+# Accuracy rate: 59.40%
+# Epoch 24/30, Loss: 0.3448162566597869
+# Accuracy rate: 57.45%
+# Epoch 25/30, Loss: 0.3221204587235683
+# Accuracy rate: 58.12%
+# Epoch 26/30, Loss: 0.28335086943172827
+# Accuracy rate: 58.85%
+# Epoch 27/30, Loss: 0.2633045602498985
+# Accuracy rate: 59.16%
+# Epoch 28/30, Loss: 0.24268730151944043
+# Accuracy rate: 58.49%
+# Epoch 29/30, Loss: 0.22828393763885266
+# Accuracy rate: 57.94%
+# Epoch 30/30, Loss: 0.245116925239563
+# Accuracy rate: 59.34%
+# Model trained and saved.
+#
+# Process finished with exit code 0
