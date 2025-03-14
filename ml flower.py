@@ -1,15 +1,13 @@
 import shutil
+from keras.src.utils import image_dataset_from_directory
 from scipy.io import loadmat
 import os
 import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras.layers import (Conv2D, BatchNormalization, ReLU, Add, GlobalAveragePooling2D, Dense, Dropout, Input)
-from tensorflow.keras.models import Model
-from tensorflow.keras.optimizers import Adam, SGD
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+import keras
 import numpy as np
 import matplotlib.pyplot as plt
+from tensorflow.python.data import AUTOTUNE
+
 
 class Flower:
     def __init__(self, datapath, labels_path, img_size=(224, 224), batch_size=32):
@@ -104,15 +102,16 @@ def predict_image(image_path, model):
     None
 
 if __name__ == "__main__":
+    import tensorflow as tf
+    print("TensorFlow version:", tf.__version__)
+    print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
     labels_path = "C:/Users/vbacho/OneDrive - UW/ml flower/imagelabels.mat"
     datapath = "C:/Users/vbacho/OneDrive - UW/ml flower/jpg"
     flower = Flower(datapath, labels_path)
 
-    train_loader, valid_loader = flower.data
+
 
     num_classes = 102
-    model = CustomCNN(num_classes)
-    model_path = "flower_model.pth"
 
 
 
