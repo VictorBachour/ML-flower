@@ -94,58 +94,10 @@ class Flower:
 
 
 class CustomCNN():
-    def __init__(self, input_shape=(224,224,3), num_classes=102, dropout_rate=0.5):
-        self.input_shape = input_shape
-        self.num_classes = num_classes
-        self.dropout_rate = dropout_rate
-        self.model = self.build_model()
-
-    def conv_block(self, x, filters, kernel_size=3, strides=1):
-        x = Conv2D(filters, kernel_size, strides=strides, padding="same")(x)
-        x = BatchNormalization()(x)
-        x = ReLU()(x)
-        return x
-
-    def build_model(self):
-        inputs = Input(shape=self.input_shape, dtype=tf.float32)  # Explicit dtype
-        x = self.conv_block(inputs, 32)
-        x = self.conv_block(x, 64, strides=2)
-        x = self.conv_block(x, 128)
-        x = self.conv_block(x, 256, strides=2)
-        x = self.conv_block(x, 512)
-
-        print(f"Type before GlobalAveragePooling2D: {type(x)}")  # Debugging line
-
-        x = GlobalAveragePooling2D()(x)  # Ensure x is a tensor
-
-        x = Dense(256, activation='relu')(x)
-        x = Dropout(self.dropout_rate)(x)
-        x = Dense(self.num_classes, activation='softmax')(x)
-
-        model = Model(inputs, x)
-        return model
-    def compile(self):
-        self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
-
-
+    def __init__(self):
+        None
 if __name__ == "__main__":
     labels_path = "C:/Users/vbacho/OneDrive - UW/ml flower/imagelabels.mat"
     datapath = "C:/Users/vbacho/OneDrive - UW/ml flower/jpg"
     flower = Flower(datapath, labels_path)
-    cnn_model = CustomCNN()
-    cnn_model.compile()
-
-    history = cnn_model.model.fit(
-        flower.train_dataset,
-        validation_data=flower.valid_dataset,
-        epochs=25,
-        callbacks=[
-            tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=3, restore_best_weights=True),
-            tf.keras.callbacks.ReduceLROnPlateau(monitor="val_loss", factor=0.5, patience=2)
-        ]
-    )
-
-    # Evaluate model
-    test_loss, test_acc = cnn_model.model.evaluate(flower.valid_dataset)
-    print(f"Test Accuracy: {test_acc * 100:.2f}%")
 
