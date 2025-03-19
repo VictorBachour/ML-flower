@@ -1,4 +1,8 @@
 import shutil
+
+from PIL.ImageStat import Global
+from keras import Input, Model
+from keras.src.layers import ReLU, BatchNormalization, Conv2D, Dense, Dropout
 from keras.src.utils import image_dataset_from_directory
 from scipy.io import loadmat
 import os
@@ -7,6 +11,8 @@ import keras
 import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow.python.data import AUTOTUNE
+from tensorflow.python.keras.layers import GlobalAveragePooling2D
+
 
 
 class Flower:
@@ -86,36 +92,60 @@ class Flower:
                     return False
         return True
 
-# Feature Extraction + Classifier – Extracting features from a CNN
-# (e.g., using intermediate layers) and training a separate classifier like SVM, Random Forest, or a simple MLP on top.
+
 class CustomCNN():
-    def __init__(self, num_classes):
-        None
+    def __init__(self, input_shape=(224,224,3), num_classes=102, dropout_rate=0.5):
+        self.input_shape = input_shape
+        self.num_classes = num_classes
+        self.dropout_rate = dropout_rate
+        self.model = self.build_model()
 
-
-
-
-    def forward(self, x):
+    def conv_block(self, x, filters, kernel_size=3, strides=1):
+        x = Conv2D(filters, kernel_size, strides=strides, padding="same")(x)
+        x = BatchNormalization()(x)
+        x = ReLU()(x)
         return x
 
-def predict_image(image_path, model):
-    None
+    def build_model(self):
+        inputs = Input(shape=self.input_shape, dtype=tf.float32)  # Explicit dtype
+        x = self.conv_block(inputs, 32)
+        x = self.conv_block(x, 64, strides=2)
+        x = self.conv_block(x, 128)
+        x = self.conv_block(x, 256, strides=2)
+        x = self.conv_block(x, 512)
+
+        print(f"Type before GlobalAveragePooling2D: {type(x)}")  # Debugging line
+
+        x = GlobalAveragePooling2D()(x)  # Ensure x is a tensor
+
+        x = Dense(256, activation='relu')(x)
+        x = Dropout(self.dropout_rate)(x)
+        x = Dense(self.num_classes, activation='softmax')(x)
+
+        model = Model(inputs, x)
+        return model
+    def compile(self):
+        self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+
 
 if __name__ == "__main__":
-    import tensorflow as tf
-    print("TensorFlow version:", tf.__version__)
-    print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
     labels_path = "C:/Users/vbacho/OneDrive - UW/ml flower/imagelabels.mat"
     datapath = "C:/Users/vbacho/OneDrive - UW/ml flower/jpg"
     flower = Flower(datapath, labels_path)
+    cnn_model = CustomCNN()
+    cnn_model.compile()
 
+    history = cnn_model.model.fit(
+        flower.train_dataset,
+        validation_data=flower.valid_dataset,
+        epochs=25,
+        callbacks=[
+            tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=3, restore_best_weights=True),
+            tf.keras.callbacks.ReduceLROnPlateau(monitor="val_loss", factor=0.5, patience=2)
+        ]
+    )
 
-
-    num_classes = 102
-
-
-
-    epochs = 30
-    for epoch in range(epochs):
-        None
+    # Evaluate model
+    test_loss, test_acc = cnn_model.model.evaluate(flower.valid_dataset)
+    print(f"Test Accuracy: {test_acc * 100:.2f}%")
 
