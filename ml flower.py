@@ -1,4 +1,8 @@
 import shutil
+
+from PIL.ImageStat import Global
+from keras import Input, Model
+from keras.src.layers import ReLU, BatchNormalization, Conv2D, Dense, Dropout
 from keras.src.utils import image_dataset_from_directory
 from scipy.io import loadmat
 import os
@@ -7,6 +11,8 @@ import keras
 import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow.python.data import AUTOTUNE
+from tensorflow.python.keras.layers import GlobalAveragePooling2D
+
 
 
 class Flower:
@@ -86,36 +92,12 @@ class Flower:
                     return False
         return True
 
-# Feature Extraction + Classifier – Extracting features from a CNN
-# (e.g., using intermediate layers) and training a separate classifier like SVM, Random Forest, or a simple MLP on top.
+
 class CustomCNN():
-    def __init__(self, num_classes):
+    def __init__(self):
         None
-
-
-
-
-    def forward(self, x):
-        return x
-
-def predict_image(image_path, model):
-    None
-
 if __name__ == "__main__":
-    import tensorflow as tf
-    print("TensorFlow version:", tf.__version__)
-    print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
     labels_path = "C:/Users/vbacho/OneDrive - UW/ml flower/imagelabels.mat"
     datapath = "C:/Users/vbacho/OneDrive - UW/ml flower/jpg"
     flower = Flower(datapath, labels_path)
-
-
-
-    num_classes = 102
-
-
-
-    epochs = 30
-    for epoch in range(epochs):
-        None
 
